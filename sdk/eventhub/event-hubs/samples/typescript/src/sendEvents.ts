@@ -115,11 +115,15 @@ export async function main(): Promise<void> {
   console.log(`Connecting to`, connectionString, eventHubName);
   const producer = new EventHubProducerClient(connectionString, eventHubName);
   const promises = [];
+  // Code runs for a total of 100 seconds
   for (let i = 0; i< 100; i++) {
     const timer1 = Date.now();
+    // Loop for 1000 times and send 100 bytes of payload in every loop = 100KB
     for (let j= 0; j<1000; j++) {
+      // This function sends 100 byte of payload
       promises.push(createAndSend(producer));
     }
+    // Waits for rest of the second
     await new Promise(resolve => setTimeout(resolve, 1000 - (timer1-Date.now())));
   }
   await Promise.all(promises).catch((err) => console.log('Error ::', err));
